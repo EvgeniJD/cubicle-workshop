@@ -1,16 +1,30 @@
 const { Router } = require("express");
+const { getCubes, getCube } = require("../controllers/cubes");
+const Cube = require("../models/cube");
 
 const router = Router();
 
 router.get("/", (req, res) => {
-  res.render("index", {
-    title: "Cube Workshop",
+  getCubes((cubes) => {
+    res.render("index", {
+      title: "Cube Workshop",
+      cubes,
+    });
   });
 });
 
 router.get("/create", (req, res) => {
   res.render("create", {
     title: "Create Cube | Cube Workshop",
+  });
+});
+
+router.post("/create", (req, res) => {
+  const { name, description, imageUrl, difficultyLevel } = req.body;
+
+  const currCube = new Cube(name, description, imageUrl, difficultyLevel);
+  currCube.save(() => {
+    res.redirect("/");
   });
 });
 
@@ -21,8 +35,11 @@ router.get("/about", (req, res) => {
 });
 
 router.get("/details/:id", (req, res) => {
-  res.render("details", {
-    title: "Details | Cube Workshop",
+  getCube(req.params.id, (cube) => {
+    res.render("details", {
+      title: "Details | Cube Workshop",
+      cube,
+    });
   });
 });
 

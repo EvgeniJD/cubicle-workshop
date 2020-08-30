@@ -12,13 +12,13 @@ class Cube {
     this.difficulty = difficulty || 0;
   }
 
-  save() {
-    fs.readFile(databaseFile, (err, dbDataJson) => {
+  save(callback) {
+    fs.readFile(databaseFile, (err, dbJson) => {
       if (err) {
         throw err;
       }
 
-      const db = JSON.parse(dbDataJson);
+      const db = JSON.parse(dbJson);
       db.push(this);
 
       fs.writeFile(databaseFile, JSON.stringify(db), (err) => {
@@ -27,6 +27,7 @@ class Cube {
         }
 
         console.log(`${this.name.toUpperCase()} is successfully stored`);
+        callback();
       });
     });
   }
